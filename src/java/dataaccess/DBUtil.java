@@ -5,10 +5,32 @@
  */
 package dataaccess;
 
+import java.sql.*;
+
 /**
  *
  * @author Keith
  */
 public class DBUtil {
-    
+
+    public static void closePreparedStatement(Statement ps) {
+        try {
+            if (ps != null) {
+                ps.close();
+            }
+        } catch (SQLException e) {
+            System.out.print(e);
+        }
+    }
+
+    public static void closeResultSet(ResultSet rs) {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+        } catch (SQLException e) {
+            System.out.print(e);
+        }
+    }
 }
+

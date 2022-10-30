@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/Week7Lab_JDBC"/>
+<Context path="/Week7Lab_JDBC">
     <Resource
-        name="jdbc/userdb.sql" auth="Container"
+        name="jdbc/userdb" auth="Container"
         driverClassName="com.mysql.jdbc.Driver"
-        url="jdbc:mysql://localhost:3306/userdb.sql"
+        url="jdbc:mysql://localhost:3306/userdb"
         username="root" password="password"
         maxActive="100" maxIdle="30" maxWait="10000"
         logAbandoned="true" removeAbandoned="true"
