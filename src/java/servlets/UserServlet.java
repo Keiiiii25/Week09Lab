@@ -36,7 +36,6 @@ public class UserServlet extends HttpServlet {
         try {
 
             users = userService.getAll();
-            request.setAttribute("users", users);
 
             roles = roleService.getAll();
             request.setAttribute("roles", roles);
@@ -63,10 +62,11 @@ public class UserServlet extends HttpServlet {
                     request.setAttribute("user", user);
                 }
             }
-        } catch (NullPointerException e) {
 
-            request.setAttribute("message", e);
-
+            if (users.isEmpty()) {
+                request.setAttribute("message", "No users to be displayed");
+            }
+            request.setAttribute("users", users);
         } catch (Exception ex) {
 
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
@@ -94,27 +94,25 @@ public class UserServlet extends HttpServlet {
 
             if (action != null) {
                 switch (action) {
-                    case "add":
-                        {
-                            String email = request.getParameter("emailNew");
-                            String first_name = request.getParameter("firstNameNew");
-                            String last_name = request.getParameter("lastNameNew");
-                            String password = request.getParameter("passwordNew");
-                            Role role = roleService.getRole(Integer.parseInt(request.getParameter("roleNew")));
-                            userService.insert(email, first_name, last_name, password, role);
-                            break;
-                        }
-                    case "Update":
-                        {
-                            String email = request.getParameter("email");
-                            String first_name = request.getParameter("firstNameEdit");
-                            String last_name = request.getParameter("lastNameEdit");
-                            String password = request.getParameter("passwordEdit");
-                            Role role = roleService.getRole(Integer.parseInt(request.getParameter("roleEdit")));
-                            userService.update(email, first_name, last_name, password, role);
-                            break;
-                        }
-                    default:
+                    case "add": {
+                        String email = request.getParameter("emailNew");
+                        String first_name = request.getParameter("firstNameNew");
+                        String last_name = request.getParameter("lastNameNew");
+                        String password = request.getParameter("passwordNew");
+                        Role role = roleService.getRole(Integer.parseInt(request.getParameter("roleNew")));
+                        userService.insert(email, first_name, last_name, password, role);
+                        break;
+                    }
+                    case "edit": {
+                        String email = request.getParameter("email");
+                        String first_name = request.getParameter("firstNameEdit");
+                        String last_name = request.getParameter("lastNameEdit");
+                        String password = request.getParameter("passwordEdit");
+                        Role role = roleService.getRole(Integer.parseInt(request.getParameter("roleEdit")));
+                        userService.update(email, first_name, last_name, password, role);
+                        break;
+                    }
+                    case "cancel":
                         response.sendRedirect("users");
                         break;
                 }
