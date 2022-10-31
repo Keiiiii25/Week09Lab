@@ -33,7 +33,7 @@
                         <td>${user.email}</td>
                         <td>${user.firstName}</td>
                         <td>${user.lastName}</td>
-                        <td>${user.role}</td>
+                        <td>${user.role.roleName}</td>
                         <td>
                             <c:url value="/users" var="editURL">
                                 <c:param name="action" value="edit"/>
@@ -56,9 +56,8 @@
                 <div class="addUser">
                     <h2>Add User</h2>
 
-                    <form>
+                    <form action="" method="POST">
                         <label>Email:</label>
-                        <input type="hidden" name="action" value="add">
                         <input type="email" name="emailNew" value="" required>
                         <br>
                         <label>First name:</label>
@@ -80,8 +79,8 @@
                         </select>
 
                         <br>
-                        <input type="submit" value="Add user">
                         <input type="hidden" name="action" value="add">
+                        <input type="submit" value="Add user">
                     </form>
                 </div>
             </c:if>
@@ -95,16 +94,16 @@
                         <label>Email ${user.email}</label>
                         <br>
                         <label>First name:</label>
-                        <input type="text" name="firstName" value="">
+                        <input type="text" name="firstNameEdit" value="">
                         <br>
                         <label>Last name:</label>
-                        <input type="text" name="firstName" value="">
+                        <input type="text" name="lastNameEdit" value="">
                         <br>
                         <label>Password:</label>
-                        <input type="password" name="password" value="">
+                        <input type="password" name="passwordEdit" value="">
                         <br>
                         <label>Role:</label>
-                        <select name="roleNew">
+                        <select name="roleEdit">
                             <c:forEach items="${roles}" var="role">
                                 <option value="${role.roleID}">
                                     ${role.roleName}

@@ -32,7 +32,7 @@ public class UserDB {
         try {
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
-            if (rs.next()) {
+            while (rs.next()) {
                 String email = rs.getString(1);
                 String firstName = rs.getString(2);
                 String lastName = rs.getString(3);
@@ -105,15 +105,15 @@ public class UserDB {
         ConnectionPool cp = ConnectionPool.getInstance();
         Connection con = cp.getConnection();
         PreparedStatement ps = null;
-        String sql = "UPDATE user SET email=?, firstName=?, lastName=?, password=?, role=?";
+        String sql = "UPDATE user SET firstName=?, lastName=?, password=?, role=? WHERE email=?";
         
         try {
             ps = con.prepareStatement(sql);
-            ps.setString(1, user.getEmail());
-            ps.setString(2, user.getFirstName());
-            ps.setString(3, user.getLastName());
-            ps.setString(4, user.getPassword());
-            ps.setInt(5, user.getRole().getRoleID());
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setString(3, user.getPassword());
+            ps.setInt(4, user.getRole().getRoleID());
+            ps.setString(5, user.getEmail());            
             ps.executeUpdate();
         } finally {
             DBUtil.closePreparedStatement(ps);

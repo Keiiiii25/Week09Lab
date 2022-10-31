@@ -30,12 +30,15 @@ public class UserServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
 
+        List<User> users;
+        List<Role> roles;
+
         try {
 
-            List<User> users = userService.getAll();
+            users = userService.getAll();
             request.setAttribute("users", users);
 
-            List<Role> roles = roleService.getAll();
+            roles = roleService.getAll();
             request.setAttribute("roles", roles);
 
             if (action != null) {
@@ -58,19 +61,19 @@ public class UserServlet extends HttpServlet {
 
                     User user = userService.getUser(email);
                     request.setAttribute("user", user);
-
-                    return;
                 }
             }
+        } catch (NullPointerException e) {
+
+            request.setAttribute("message", e);
+
         } catch (Exception ex) {
 
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
             request.setAttribute("message", "error");
-
         }
 
         getServletContext().getRequestDispatcher("/WEB-INF/users.jsp").forward(request, response);
-        session.setAttribute("message", null);
 
         return;
     }
@@ -84,35 +87,42 @@ public class UserServlet extends HttpServlet {
         UserService userService = new UserService();
         RoleService roleService = new RoleService();
 
+        String action = request.getParameter("action");
+        request.setAttribute("action", action);
+
         try {
-            String action = request.getParameter("action");
-            request.setAttribute("action", action);
 
             if (action != null) {
-                if (action.equalsIgnoreCase("add")) {
-                    String email = request.getParameter("email");
-                    String first_name = request.getParameter("firstNameNew");
-                    String last_name = request.getParameter("lastNameNew");
-                    String password = request.getParameter("passwordNew");
-                    Role role = roleService.getRole(Integer.parseInt(request.getParameter("roleNew")));
-
-                    userService.insert(email, first_name, last_name, password, role);
-                } else if (action.equalsIgnoreCase("edit")) {
-                    String email = request.getParameter("email");
-                    String first_name = request.getParameter("firstNameNew");
-                    String last_name = request.getParameter("lastNameNew");
-                    String password = request.getParameter("passwordNew");
-                    Role role = roleService.getRole(Integer.parseInt(request.getParameter("roleNew")));
-
-                    userService.update(email, first_name, last_name, password, role);
-                } else {
-                    response.sendRedirect("users");
+                switch (action) {
+                    case "add":
+                        {
+                            String email = request.getParameter("emailNew");
+                            String first_name = request.getParameter("firstNameNew");
+                            String last_name = request.getParameter("lastNameNew");
+                            String password = request.getParameter("passwordNew");
+                            Role role = roleService.getRole(Integer.parseInt(request.getParameter("roleNew")));
+                            userService.insert(email, first_name, last_name, password, role);
+                            break;
+                        }
+                    case "Update":
+                        {
+                            String email = request.getParameter("email");
+                            String first_name = request.getParameter("firstNameEdit");
+                            String last_name = request.getParameter("lastNameEdit");
+                            String password = request.getParameter("passwordEdit");
+                            Role role = roleService.getRole(Integer.parseInt(request.getParameter("roleEdit")));
+                            userService.update(email, first_name, last_name, password, role);
+                            break;
+                        }
+                    default:
+                        response.sendRedirect("users");
+                        break;
                 }
             }
         } catch (Exception ex) {
             session.setAttribute("message", "There was an error: " + ex);
         }
-        
+
         response.sendRedirect("users");
         return;
     }
