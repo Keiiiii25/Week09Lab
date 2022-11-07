@@ -8,8 +8,8 @@ package dataaccess;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
 import models.Role;
 
 /**
@@ -19,60 +19,24 @@ import models.Role;
 public class RoleDB {
     
     public List<Role> getAll() throws Exception {
-        List<Role> roles = new ArrayList<>();
-        ConnectionPool cp = ConnectionPool.getInstance();
-        Connection con = cp.getConnection();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        
-        String sql = "SELECT * FROM role";
-        
+        EntityManager em = DBUtil.getEmFactory().createEntityManager();
+
         try {
-            ps = con.prepareStatement(sql);
-            rs = ps.executeQuery();
-            
-            while(rs.next()) {
-                int roleID = rs.getInt(1);
-                String roleName = rs.getString(2);
-                Role role = new Role(roleID, roleName);
-                roles.add(role);
-            }
+            List<Role> roles = em.createNamedQuery("Role.findAll", Role.class).getResultList();
+            return roles;
         } finally {
-            DBUtil.closePreparedStatement(ps);
-            DBUtil.closeResultSet(rs);
-            cp.freeConnection(con);
+            em.close();
         }
-        
-        return roles;
     }
     
     public Role getRole(int roleID) throws Exception {
-        ConnectionPool cp = ConnectionPool.getInstance();
-        Connection con = cp.getConnection();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Role role = null;
+        EntityManager em = DBUtil.getEmFactory().createEntityManager();
         
-        String sql = "SELECT * FROM role WHERE role_id=?";
-        
-        try {
-            ps = con.prepareStatement(sql);
-            ps.setInt(1, roleID);
-            rs = ps.executeQuery();
-            
-            rs.next();
-            
-            int rID = rs.getInt(1);
-            String rName = rs.getString(2);
-            
-            role = new Role(rID, rName);
-            
-        } finally {
-            DBUtil.closePreparedStatement(ps);
-            DBUtil.closeResultSet(rs);
-            cp.freeConnection(con);
+        try{
+            Role role = em.find(Role.class, roleID);
+            return role;
+        }finally{
+            em.close();
         }
-        
-        return role;
     }
 }
